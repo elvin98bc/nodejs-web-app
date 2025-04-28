@@ -4,6 +4,7 @@ pipeline {
     tools {
         nodejs 'nodejs'
     }
+    
     stages {
         stage('Git Checkout') {
             steps {
@@ -13,6 +14,12 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh "npm install"
+            }
+        }
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --format HTML', odcInstallation: 'DP'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
     }
